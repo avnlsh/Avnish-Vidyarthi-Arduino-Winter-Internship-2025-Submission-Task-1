@@ -4,17 +4,14 @@
 #include <DHT.h>
 #include <Wire.h>
 
-// ---------------- OLED ----------------
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 
-// ---------------- DHT ----------------
 #define DHTPIN 2         // Data pin
 #define DHTTYPE DHT11    // Your HT sensor
 DHT dht(DHTPIN, DHTTYPE);
 
-// ---------------- Pins ----------------
 int LDR_pin = A0;
 int Flex_pin = A1;
 
@@ -26,10 +23,9 @@ int buzzerPin = 9;
 
 Servo myservo;
 
-// ---------------- Thresholds ----------------
 int LDR_THRESHOLD = 60;
 int FLEX_THRESHOLD = 250;
-int TEMP_THRESHOLD = 30;   // °C alarm point
+int TEMP_THRESHOLD = 30;   
 
 void setup() {
   Serial.begin(115200);
@@ -53,29 +49,23 @@ void setup() {
 
 void loop() {
 
-  // ------------ Read SENSORS ----------------
   int ldrValue = analogRead(LDR_pin);
   int flexValue = analogRead(Flex_pin);
 
   float temperature = dht.readTemperature();
   float humidity = dht.readHumidity();
 
-  // ------------ LDR → LED1 ------------------
   bool ldrDark = (ldrValue < LDR_THRESHOLD);
   digitalWrite(LED_LDR, ldrDark ? HIGH : LOW);
 
-  // ------------ Flex → Servo ----------------
   bool flexBent = (flexValue > FLEX_THRESHOLD);
   myservo.write(flexBent ? 120 : 0);
 
-  // ------------ Temperature → LED2 + Buzzer --
   bool tempOK = !isnan(temperature);
   bool tempHigh = tempOK && temperature > TEMP_THRESHOLD;
 
   digitalWrite(LED_TEMP, tempHigh ? HIGH : LOW);
   digitalWrite(buzzerPin, tempHigh ? HIGH : LOW);
-
-  // ------------ OLED Display ----------------
   display.clearDisplay();
   display.setTextSize(1);
   display.setTextColor(WHITE);
@@ -109,7 +99,6 @@ void loop() {
 
   display.display();
 
-  // ------------ Serial Monitor Output ------------
   Serial.println("------ SENSOR STATUS ------");
   Serial.print("LDR Value      : "); Serial.println(ldrValue);
   Serial.print("Flex Value     : "); Serial.println(flexValue);
