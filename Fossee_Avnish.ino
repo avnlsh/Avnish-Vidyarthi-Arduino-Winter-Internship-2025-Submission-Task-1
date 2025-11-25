@@ -8,8 +8,8 @@
 #define SCREEN_HEIGHT 64
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 
-#define DHTPIN 2         // Data pin
-#define DHTTYPE DHT11    // Your HT sensor
+#define DHTPIN 2      
+#define DHTTYPE DHT11   
 DHT dht(DHTPIN, DHTTYPE);
 
 int LDR_pin = A0;
@@ -37,12 +37,12 @@ void setup() {
   myservo.attach(servoPin);
   myservo.write(0);
 
-  // Start sensors
+ 
   dht.begin();
 
-  // Start OLED
+
   if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
-    while (true); // halt if OLED missing
+    while (true); 
   }
   display.clearDisplay();
 }
